@@ -1,7 +1,8 @@
 from django.shortcuts import render
 from rest_framework import viewsets
-from .models import Cadastro, Cliente, Transacao
-from .serializers import CadastroSerializer, ClienteSerializer, TransacaoSerializer
+from rest_framework.generics import ListAPIView
+from .models import Cadastro, Cliente, Transacao, Contas, Deposito
+from .serializers import CadastroSerializer, ClienteSerializer, TransacaoSerializer, ContaSerializer, DepositoSerializer
 from django.contrib.auth import authenticate
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -74,3 +75,17 @@ class TransacaoViewSet(viewsets.ModelViewSet):
                # # registra a transação
                _serializer.save()
                return Response(data=_serializer.data, status=201)
+
+
+class ContasViewSet(viewsets.ModelViewSet):
+      queryset = Contas.objects.all()
+      serializer_class = ContaSerializer
+      
+      
+# class SaldoList(ListAPIView):
+#       queryset = Cliente.objects.all()
+#       serializer_class = SaldoSerializer
+      
+class DepositoViewSet(viewsets.ModelViewSet):
+      queryset = Deposito.objects.all()
+      serializer_class = DepositoSerializer

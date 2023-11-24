@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Cadastro, Cliente, Transacao
+from .models import Cadastro, Cliente, Transacao, Contas, Deposito
 
 class CadastroSerializer(serializers.ModelSerializer):
     class Meta:
@@ -32,3 +32,21 @@ class TransacaoSerializer(serializers.ModelSerializer):
 
 #Validações de entrada nos campos podem ser consultadas em Validators
 # https://django-rest-framework.org/api-guide/validators/
+
+
+class ContaSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Contas
+        fields = ['agencia', 'conta', 'saldo', 'get_ultima_movimentacao']
+        
+
+# class SaldoSerializer(serializers.ModelSerializer):
+#     class Meta:
+#         model = Cliente
+#         fields = ['cliente', 'saldo', 'ultima_movimentacao']
+        
+        
+class DepositoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Deposito
+        fields = ['id', 'conta', 'valor', 'get_data_deposito']
