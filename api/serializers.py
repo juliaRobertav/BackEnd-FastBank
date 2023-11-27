@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Cadastro, Cliente, Transacao, Contas, Deposito
+from .models import Cadastro, Cliente, Transacao, Contas, Deposito, Saque
 
 class CadastroSerializer(serializers.ModelSerializer):
     class Meta:
@@ -50,3 +50,9 @@ class DepositoSerializer(serializers.ModelSerializer):
     class Meta:
         model = Deposito
         fields = ['id', 'conta', 'valor', 'get_data_deposito']
+        
+        
+class SaqueSerializer(serializers.ModelSerializer):
+    class Meta:
+        model =Saque
+        fields = ['id', 'conta', 'valor', 'get_data_saque']

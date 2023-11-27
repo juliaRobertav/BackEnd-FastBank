@@ -1,4 +1,6 @@
 from django.db import models
+from django.dispatch import receiver
+from django.db.models.signals import post_save
 
 # Create your models here.
 
@@ -77,4 +79,23 @@ class Deposito(models.Model):
     def get_data_deposito(self):
         return self.data_deposito.strftime('%d/%m/%Y %H:%M')
     
+    
+class Saque(models.Model):
+    conta = models.ForeignKey('Contas', on_delete=models.CASCADE)
+    valor = models.DecimalField(decimal_places=2, max_digits=10, default=0.00)
+    data_saque = models.DateTimeField(auto_now_add=True)
+    
+    def get_data_saque(self):
+        return self.data_saque.strftime('%d/%m/%Y %H:%M')
+    
+@receiver(post_save, sender=Deposito)
+def update_saldo(sender, instance, **kwargs):
+    instance.conta.saldo += instance.valor
+    instance.conta.save()
+    
+@receiver(post_save, sender=Saque)
+def update_saldo(sender, instance, **kwargs):
+    instance.conta.saldo -= instance.valor
+    instance.conta.save()
+        
     
