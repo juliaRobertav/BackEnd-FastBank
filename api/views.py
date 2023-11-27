@@ -109,10 +109,6 @@ class EmprestimoViewSet(viewsets.ModelViewSet):
 #       return super().create(request, *args, **kwargs)
 # adicionar nascimento para validar se é de maior!
 
-
-# FALTA:
-#Cartao de Credito:
-# RG, CPF, Residencia, Renda
-
-#Saldo
-#Histórico
+# class CreditoViewSet(viewsets.ModelViewSet):
+#     queryset = Credito.objects.all()
+#     serializer_class = CreditoSerializer

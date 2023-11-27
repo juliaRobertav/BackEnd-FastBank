@@ -29,6 +29,7 @@ router.register(r'api_contas', ContasViewSet, basename="conta")
 router.register(r'api_deposito', DepositoViewSet, basename="deposito")
 router.register(r'api_saque', SaqueViewSet, basename="saque")
 router.register(r'api_emprestimo', EmprestimoViewSet, basename="emprestimo-teste")
+# router.register(r'api_credito', CreditoViewSet, basename="credito-teste")
 # router.register(r'api_saldo', SaldoList.as_view(), basename="saldo-teste")
 
 urlpatterns = [

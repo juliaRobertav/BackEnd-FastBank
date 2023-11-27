@@ -148,3 +148,11 @@ class Emprestimo(models.Model):
     def __str__(self):
         return f'Empréstimo de {self.valor} para {self.cliente}'
     
+    
+# class Credito(models.Model):
+#     cliente = models.ForeignKey('Cadastro', on_delete=models.CASCADE)
+#     renda = models.FloatField()
+    
+#     def __str__(self):
+#         return self.cliente
+    

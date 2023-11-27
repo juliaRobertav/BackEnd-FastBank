@@ -62,3 +62,9 @@ class EmprestimoSerializer(serializers.ModelSerializer):
     class Meta:
         model = Emprestimo
         fields = '__all__'
+        
+        
+# class CreditoSerializer(serializers.ModelSerializer):
+#     class Meta:
+#         model = Credito
+#         fields = ['cliente']
