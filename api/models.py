@@ -137,4 +137,14 @@ def update_saldo(sender, instance, **kwargs):
     instance.conta.saldo -= instance.valor
     instance.conta.save()
         
+        
+        
+class Emprestimo(models.Model):
+    cliente = models.ForeignKey('Cliente', on_delete=models.CASCADE)
+    valor = models.FloatField()
+    taxa_juros = models.FloatField()
+    data_solicitacao = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f'Empréstimo de {self.valor} para {self.cliente}'
     

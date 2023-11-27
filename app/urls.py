@@ -16,7 +16,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-from api.views import CadastroViewSet, ClienteViewSet, TransacaoViewSet, ContasViewSet, DepositoViewSet, SaqueViewSet
+from api.views import CadastroViewSet, ClienteViewSet, TransacaoViewSet, ContasViewSet, DepositoViewSet, SaqueViewSet, EmprestimoViewSet
 from rest_framework import routers
 from django.conf.urls.static import static
 from django.conf import settings
@@ -25,9 +25,10 @@ router = routers.DefaultRouter()
 router.register(r'cadastro', CadastroViewSet)
 router.register(r'api_cliente', ClienteViewSet, basename="cliente")
 router.register(r'api_transacao', TransacaoViewSet, basename="transacao")
-router.register(r'api_contas', ContasViewSet, basename="conta-teste")
-router.register(r'api_deposito', DepositoViewSet, basename="deposito-teste")
-router.register(r'api_saque', SaqueViewSet, basename="saque-teste")
+router.register(r'api_contas', ContasViewSet, basename="conta")
+router.register(r'api_deposito', DepositoViewSet, basename="deposito")
+router.register(r'api_saque', SaqueViewSet, basename="saque")
+router.register(r'api_emprestimo', EmprestimoViewSet, basename="emprestimo-teste")
 # router.register(r'api_saldo', SaldoList.as_view(), basename="saldo-teste")
 
 urlpatterns = [
