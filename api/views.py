@@ -100,5 +100,19 @@ class EmprestimoViewSet(viewsets.ModelViewSet):
     queryset = Emprestimo.objects.all()
     serializer_class = EmprestimoSerializer
     
-    def create(self, request, *args, **kwargs):
-         return super().create(request, *args, **kwargs)
+    #FALTA TERMINAR (LÓGICA) EMPRESTIMO:
+#     def create(self, request, *args, **kwargs):
+#       dados_do_emprestimo = request.data #pega todos os dados informados na API e armazena em dados _da_transacao
+#       valor_do_emprestimo = float(dados_do_emprestimo['valor']) #buscando um dado especifico
+#       numero_da_conta = dados_do_emprestimo['conta_cliente']
+#       cliente_conta = Cliente.objects.filter(conta=numero_da_conta).values("saldo")
+#       return super().create(request, *args, **kwargs)
+# adicionar nascimento para validar se é de maior!
+
+
+# FALTA:
+#Cartao de Credito:
+# RG, CPF, Residencia, Renda
+
+#Saldo
+#Histórico
