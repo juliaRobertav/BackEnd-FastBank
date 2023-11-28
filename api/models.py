@@ -46,6 +46,7 @@ class Cadastro(models.Model):
     nome = models.CharField(max_length=50)
     nasc = models.CharField(max_length=50)
     cpf = models.IntegerField()
+    rg = models.CharField(max_length=20, default='')
     telefone = models.CharField(max_length=15, default='00.00000.0000')
     endereco = models.OneToOneField(Endereco, on_delete=models.CASCADE, null=True)  
     email = models.CharField(max_length=50)
@@ -149,10 +150,17 @@ class Emprestimo(models.Model):
         return f'Empréstimo de {self.valor} para {self.cliente}'
     
     
+class Credito(models.Model):
+    cliente = models.ForeignKey('Contas', on_delete=models.CASCADE)
+    renda = models.FloatField()
+    
+    def __str__(self):
+        return self.cliente
 # class Credito(models.Model):
 #     cliente = models.ForeignKey('Cadastro', on_delete=models.CASCADE)
 #     renda = models.FloatField()
     
 #     def __str__(self):
 #         return self.cliente
+
     
