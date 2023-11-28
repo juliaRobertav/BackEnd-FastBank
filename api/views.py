@@ -1,8 +1,10 @@
 from django.shortcuts import render
 from rest_framework import viewsets
 from rest_framework.generics import ListAPIView
+
 from .models import Cadastro, Cliente, Transacao, Contas, Deposito, Saque, Emprestimo, Credito
 from .serializers import CadastroSerializer, ClienteSerializer, TransacaoSerializer, ContaSerializer, DepositoSerializer, SaqueSerializer, EmprestimoSerializer, CreditoSerializer
+from django.contrib.auth import authenticate
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
@@ -112,6 +114,5 @@ class CreditoViewSet(viewsets.ModelViewSet):
     queryset = Credito.objects.all()
     serializer_class = CreditoSerializer
     
-# class CreditoViewSet(viewsets.ModelViewSet):
-#     queryset = Credito.objects.all()
-#     serializer_class = CreditoSerializer
+
+
