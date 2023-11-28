@@ -1,8 +1,13 @@
 from django.shortcuts import render
 from rest_framework import viewsets
 from rest_framework.generics import ListAPIView
+<<<<<<< HEAD
 from .models import Cadastro, Cliente, Transacao, Contas, Deposito, Saque, Emprestimo, Credito
 from .serializers import CadastroSerializer, ClienteSerializer, TransacaoSerializer, ContaSerializer, DepositoSerializer, SaqueSerializer, EmprestimoSerializer, CreditoSerializer
+=======
+from .models import Cadastro, Cliente, Transacao, Contas, Deposito, Saque, Emprestimo
+from .serializers import CadastroSerializer, ClienteSerializer, TransacaoSerializer, ContaSerializer, DepositoSerializer, SaqueSerializer, EmprestimoSerializer
+>>>>>>> ae24f884adee08ad6dc7c9b4f6ed028f167eae77
 from django.contrib.auth import authenticate
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -109,6 +114,12 @@ class EmprestimoViewSet(viewsets.ModelViewSet):
 #       return super().create(request, *args, **kwargs)
 # adicionar nascimento para validar se é de maior!
 
+<<<<<<< HEAD
 class CreditoViewSet(viewsets.ModelViewSet):
     queryset = Credito.objects.all()
     serializer_class = CreditoSerializer
+=======
+# class CreditoViewSet(viewsets.ModelViewSet):
+#     queryset = Credito.objects.all()
+#     serializer_class = CreditoSerializer
+>>>>>>> ae24f884adee08ad6dc7c9b4f6ed028f167eae77

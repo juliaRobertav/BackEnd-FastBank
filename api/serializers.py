@@ -1,5 +1,9 @@
 from rest_framework import serializers
+<<<<<<< HEAD
 from .models import Cadastro, Cliente, Transacao, Contas, Deposito, Saque, Emprestimo, Credito
+=======
+from .models import Cadastro, Cliente, Transacao, Contas, Deposito, Saque, Emprestimo
+>>>>>>> ae24f884adee08ad6dc7c9b4f6ed028f167eae77
 
 class CadastroSerializer(serializers.ModelSerializer):
     class Meta:
@@ -64,7 +68,14 @@ class EmprestimoSerializer(serializers.ModelSerializer):
         fields = '__all__'
         
         
+<<<<<<< HEAD
 class CreditoSerializer(serializers.ModelSerializer):
     class Meta:
         model = Credito
         fields = '__all__'
+=======
+# class CreditoSerializer(serializers.ModelSerializer):
+#     class Meta:
+#         model = Credito
+#         fields = ['cliente']
+>>>>>>> ae24f884adee08ad6dc7c9b4f6ed028f167eae77
