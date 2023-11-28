@@ -1,20 +1,52 @@
 from django.shortcuts import render
 from rest_framework import viewsets
 from rest_framework.generics import ListAPIView
-
-from .models import Cadastro, Cliente, Transacao, Contas, Deposito, Saque, Emprestimo, Credito
-from .serializers import CadastroSerializer, ClienteSerializer, TransacaoSerializer, ContaSerializer, DepositoSerializer, SaqueSerializer, EmprestimoSerializer, CreditoSerializer
+from rest_framework.views import APIView
+from .models import Cadastro, Cliente, Transacao, Contas, Deposito, Saque, Emprestimo, Credito, Login
+from .serializers import CadastroSerializer, ClienteSerializer, TransacaoSerializer, ContaSerializer, DepositoSerializer, SaqueSerializer, EmprestimoSerializer, CreditoSerializer, LoginSerializer
 from django.contrib.auth import authenticate
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
+from django.contrib.auth import authenticate
+from rest_framework.authtoken.models import Token
 
 
 class CadastroViewSet(viewsets.ModelViewSet):
     queryset = Cadastro.objects.all()
     serializer_class = CadastroSerializer
     
+    
+class LoginViewSet(viewsets.ModelViewSet):
+      
+      serializer_class = LoginSerializer
+      queryset = Login.objects.all()
+      
+      def create(self, request, *args, **kwargs):  # Use "create" em vez de "post"
+            email = request.data.get('email')
+            senha = request.data.get('senha')
+
+        # Autenticar o usuário
+            user = authenticate(email=email, senha=senha)
+
+            if user:
+            # Criar ou obter token de autenticação
+                  token, created = Token.objects.get_or_create(user=user)
+
+            # Serializar os dados, incluindo detalhes do Cadastro
+                  login_serializer = LoginSerializer(user.login)
+                  response_data = {
+                  'token': token.key,
+                  'login_details': login_serializer.data
+                  }
+
+                  return Response(response_data, status=status.HTTP_200_OK)
+      
+            else:
+                  
+                  return Response({'error': 'Credenciais inválidas'}, status=status.HTTP_401_UNAUTHORIZED)
+      
     
 class ClienteViewSet(viewsets.ModelViewSet):
       serializer_class = ClienteSerializer

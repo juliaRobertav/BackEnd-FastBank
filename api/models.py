@@ -49,14 +49,19 @@ class Cadastro(models.Model):
     rg = models.CharField(max_length=20, default='')
     telefone = models.CharField(max_length=15, default='00.00000.0000')
     endereco = models.OneToOneField(Endereco, on_delete=models.CASCADE, null=True)  
-    email = models.CharField(max_length=50)
+    email = models.EmailField(unique=True)
     senha = models.CharField(max_length=50)
     
     def __str__(self):
-        return f'{self.nome} - {self.telefone} - R$ {self.saldo}'
+        return f'{self.nome} - {self.telefone}'
+    
+ 
+class Login(models.Model):
+    
+    email = models.ForeignKey(Cadastro, on_delete=models.CASCADE, related_name='logins_email')
+    senha = models.OneToOneField(Cadastro, on_delete=models.CASCADE, related_name='login_senha')
     
     
-
 class Cliente(models.Model):
     
     def upload_imagem_cliente(instance, filename):
@@ -93,10 +98,13 @@ class Contas(models.Model):
     ultima_movimentacao = models.DateTimeField(auto_now=True)
     
     def __str__(self) :
-        return f'{str(self.agencia)}/{str(self.conta)}'
+        return f'{str(self.agencia)}/{str(self.conta)}/{str(self.saldo)}'
     
     def get_ultima_movimentacao(self):
         return self.ultima_movimentacao.strftime('%d/%m/%Y %H:%M')
+    
+    # def get_saldo(self):
+    #     return self.saldo
     
     
 # class Saldo(models.Model):

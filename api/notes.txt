@@ -10,6 +10,22 @@ https://julinha.gitbook.io/django/
 #Cartao de Credito:
 # RG, CPF, Residencia, Renda
 
-# terminar emprestimo
-#Saldo
-#Histórico
+# terminar emprestimo 
+
+#aprovar cartao e emprestimo
+
+#Saldo - Tela e conectar com Login
+
+#Histórico - transações
+
+# organizar cadastro
+
+# comentar
+
+# Login - autenticação e tela(conectar):
+
+# https://medium.com/@hudsonbrendon/autentica%C3%A7%C3%A3o-com-jwt-no-django-rest-framework-45626936c276
+
+# https://youtu.be/nLQoAlxABX4?si=ypYjIYVDpY7Nvmwj
+
+# https://youtu.be/G7DiacAJisY?si=TWckKLgw9N5dhVzp

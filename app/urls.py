@@ -16,7 +16,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-from api.views import CadastroViewSet, ClienteViewSet, TransacaoViewSet, ContasViewSet, DepositoViewSet, SaqueViewSet, EmprestimoViewSet, CreditoViewSet
+from api.views import CadastroViewSet, ClienteViewSet, TransacaoViewSet, ContasViewSet, DepositoViewSet, SaqueViewSet, EmprestimoViewSet, CreditoViewSet, LoginViewSet
 from rest_framework import routers
 from django.conf.urls.static import static
 from django.conf import settings
@@ -28,8 +28,9 @@ router.register(r'api_transacao', TransacaoViewSet, basename="transacao")
 router.register(r'api_contas', ContasViewSet, basename="conta")
 router.register(r'api_deposito', DepositoViewSet, basename="deposito")
 router.register(r'api_saque', SaqueViewSet, basename="saque")
-router.register(r'api_emprestimo', EmprestimoViewSet, basename="emprestimo-teste")
-router.register(r'api_credito', CreditoViewSet, basename="credito-teste")
+router.register(r'api_emprestimo', EmprestimoViewSet, basename="emprestimo")
+router.register(r'api_credito', CreditoViewSet, basename="credito")
+router.register(r'api_login', LoginViewSet, basename="login-teste")
 
 urlpatterns = [
     path('admin/', admin.site.urls),
