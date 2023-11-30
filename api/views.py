@@ -13,11 +13,6 @@ from django.contrib.auth import authenticate
 from rest_framework.authtoken.models import Token
 
 
-# class EnderecoViewSet(viewsets.ModelViewSet):
-#       queryset = Endereco.objects.all()
-#       serializer_class = EnderecoSerializer
-      
-
 class CadastroViewSet(viewsets.ModelViewSet):
     queryset = Cadastro.objects.all()
     serializer_class = CadastroSerializer
@@ -115,9 +110,6 @@ class TransacaoViewSet(viewsets.ModelViewSet):
                return Response(data=_serializer.data, status=201)
 
 
-# class ContasViewSet(viewsets.ModelViewSet):
-#       queryset = Contas.objects.all()
-#       serializer_class = ContaSerializer
       
       
 # class SaldoList(ListAPIView):

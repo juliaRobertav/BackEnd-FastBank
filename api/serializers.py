@@ -13,6 +13,7 @@ class CadastroSerializer(serializers.ModelSerializer):
     class Meta:
         model = Cadastro
         fields = '__all__'
+
         
         
         
@@ -49,10 +50,6 @@ class TransacaoSerializer(serializers.ModelSerializer):
 # https://django-rest-framework.org/api-guide/validators/
 
 
-# class ContaSerializer(serializers.ModelSerializer):
-#     class Meta:
-#         model = Contas
-#         fields = ['agencia', 'conta', 'saldo', 'get_ultima_movimentacao']
         
 
 # class SaldoSerializer(serializers.ModelSerializer):
