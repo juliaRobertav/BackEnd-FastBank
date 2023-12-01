@@ -11,6 +11,8 @@ from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from django.contrib.auth import authenticate
 from rest_framework.authtoken.models import Token
+from decimal import Decimal
+from rest_framework.decorators import action
 
 
 class CadastroViewSet(viewsets.ModelViewSet):
@@ -23,7 +25,7 @@ class LoginViewSet(viewsets.ModelViewSet):
       serializer_class = LoginSerializer
       queryset = Login.objects.all()
       
-      def create(self, request, *args, **kwargs):  # Use "create" em vez de "post"
+      def create(self, request, *args, **kwargs):  
             email = request.data.get('email')
             senha = request.data.get('senha')
 
@@ -51,12 +53,11 @@ class LoginViewSet(viewsets.ModelViewSet):
 class ClienteViewSet(viewsets.ModelViewSet):
       serializer_class = ClienteSerializer
       queryset = Cliente.objects.all()
-    # permission_classes = (IsAuthenticated,)
+
 
       def create(self, request, *args, **kwargs):
             dados_do_cliente = request.data #pega todos os dados informados na APi e armazena em dados _do cliente
             limite = float(dados_do_cliente['limite'])
-            # Exemplo de regra de negócio: Valor máximo do limite = R$ 1000,00
             if  limite > 1000:
                   return Response(status=403, data='O valor máximo permitido para limite em conta corrente é R$ 1000,00 ')
 
@@ -73,7 +74,7 @@ class TransacaoViewSet(viewsets.ModelViewSet):
 
       def create(self, request, *args, **kwargs):
             dados_da_transacao = request.data #pega todos os dados informados na API e armazena em dados _da_transacao
-            valor_da_transacao = float(dados_da_transacao['valor']) #buscando um dado especifico
+            valor_da_transacao = Decimal(dados_da_transacao['valor']) #buscando um dado especifico
             numero_da_conta = dados_da_transacao['conta_cliente']
             cliente_conta = Cliente.objects.filter(conta=numero_da_conta).values("saldo")
             # O Resultado da consulta acima retorna um queryset assimm <QuerySet [{'saldo': 300}]>
@@ -108,13 +109,8 @@ class TransacaoViewSet(viewsets.ModelViewSet):
                # # registra a transação
                _serializer.save()
                return Response(data=_serializer.data, status=201)
-
-
       
-      
-# class SaldoList(ListAPIView):
-#       queryset = Cliente.objects.all()
-#       serializer_class = SaldoSerializer
+
       
 class DepositoViewSet(viewsets.ModelViewSet):
       queryset = Deposito.objects.all()
@@ -125,23 +121,65 @@ class SaqueViewSet(viewsets.ModelViewSet):
       queryset = Saque.objects.all()
       serializer_class = SaqueSerializer
       
-      
+
+
 class EmprestimoViewSet(viewsets.ModelViewSet):
     queryset = Emprestimo.objects.all()
     serializer_class = EmprestimoSerializer
+
+    def create(self, request, *args, **kwargs):
+            dados_do_emprestimo = request.data 
+            valor_do_emprestimo = Decimal(dados_do_emprestimo['valor']) 
+            numero_da_conta = dados_do_emprestimo['conta']
+            cliente_conta = Cliente.objects.filter(conta=numero_da_conta).values("saldo")
+            
+            saldo = cliente_conta[0]
+            saldo = saldo['saldo']
+   
+            if  valor_do_emprestimo < 0 : 
+                  return Response(status=403, data='Valor do empréstimo menor que zero')
+
+            if saldo < valor_do_emprestimo : 
+
+                  return Response(status=403, data='Não há saldo suficiente para realizar esta transação. ')
+
     
-    #FALTA TERMINAR (LÓGICA) EMPRESTIMO:
-#     def create(self, request, *args, **kwargs):
-#       dados_do_emprestimo = request.data #pega todos os dados informados na API e armazena em dados _da_transacao
-#       valor_do_emprestimo = float(dados_do_emprestimo['valor']) #buscando um dado especifico
-#       numero_da_conta = dados_do_emprestimo['conta_cliente']
-#       cliente_conta = Cliente.objects.filter(conta=numero_da_conta).values("saldo")
-#       return super().create(request, *args, **kwargs)
-# adicionar nascimento para validar se é de maior!
+            _serializer = self.serializer_class(data=request.data)
+ 
+            if _serializer.is_valid():
+
+               cliente_conta = Cliente.objects.get(conta=numero_da_conta)
+               cliente_conta.saldo = saldo + valor_do_emprestimo 
+               cliente_conta.save()
+
+               _serializer.save()
+               return Response(data=_serializer.data, status=201)
+
+    
+
 
 class CreditoViewSet(viewsets.ModelViewSet):
-    queryset = Credito.objects.all()
-    serializer_class = CreditoSerializer
+      queryset = Credito.objects.all()
+      serializer_class = CreditoSerializer
+    
+      def create(self, request, *args, **kwargs):
+        dados_do_credito = request.data
+
+        numero_da_conta = dados_do_credito['cliente']
+
+        try:
+            conta = Cliente.objects.get(conta=numero_da_conta)
+        except Cliente.DoesNotExist:
+            return Response(status=404, data='Cliente não encontrado')
+
+        renda = conta.renda
+  
+        if renda >= 1000:
+            return Response(status=201, data='Cartão Aprovado!')
+        elif renda < 1000:
+              return Response(status=403, data='Cartão de crédito não aprovado...')
+        else:
+            return Response(status=403, data='Algo deu errado...')
     
 
 

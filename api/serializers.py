@@ -3,10 +3,6 @@ from .models import Cadastro, Cliente, Transacao, Deposito, Saque, Emprestimo, C
 from django.contrib.auth import authenticate
 
 
-# class EnderecoSerializer(serializers.ModelSerializer):
-#     class Meta:
-#         model = Endereco
-#         fields = '__all__'
         
 
 class CadastroSerializer(serializers.ModelSerializer):
@@ -46,16 +42,12 @@ class TransacaoSerializer(serializers.ModelSerializer):
         transacao_instance = Transacao.objects.create(**validated_data, conta_cliente=cliente_instance)
         return transacao_instance
 
+
 #Validações de entrada nos campos podem ser consultadas em Validators
 # https://django-rest-framework.org/api-guide/validators/
 
 
-        
-
-# class SaldoSerializer(serializers.ModelSerializer):
-#     class Meta:
-#         model = Cliente
-#         fields = ['cliente', 'saldo', 'ultima_movimentacao']
+    
         
         
 class DepositoSerializer(serializers.ModelSerializer):
