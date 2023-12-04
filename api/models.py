@@ -30,12 +30,11 @@ class Cadastro(models.Model):
  
 class Login(models.Model):
     
-    email = models.ForeignKey(Cadastro, on_delete=models.CASCADE, related_name='logins_email')
-    senha = models.OneToOneField(Cadastro, on_delete=models.CASCADE, related_name='login_senha')
+    email = models.EmailField(unique=True)
+    senha =  senha = models.CharField(max_length=50)
     
     
 # modelo criado para o Cliente colocar informações adicionais de cadastro
-    
 class Cliente(models.Model):
     
 

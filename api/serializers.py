@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Cadastro, Cliente, Transacao, Deposito, Saque, Emprestimo, Credito, Login
+from .models import Cadastro, Cliente, Transacao, Deposito, Saque, Emprestimo, Credito
 from django.contrib.auth import authenticate
 
 
@@ -13,11 +13,10 @@ class CadastroSerializer(serializers.ModelSerializer):
         
         
         
-class LoginSerializer(serializers.ModelSerializer):
-
-    class Meta:
-        model = Login
-        fields = '__all__'
+# class LoginSerializer(serializers.ModelSerializer):
+#     class Meta:
+#         model = Login
+#         fields = '__all__'
 
 
 class ClienteSerializer(serializers.ModelSerializer):

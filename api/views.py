@@ -1,53 +1,97 @@
-from django.shortcuts import render
 from rest_framework import viewsets
-from rest_framework.generics import ListAPIView
-from rest_framework.views import APIView
-from .models import Cadastro, Cliente, Transacao, Deposito, Saque, Emprestimo, Credito, Login
-from .serializers import CadastroSerializer, ClienteSerializer, TransacaoSerializer, DepositoSerializer, SaqueSerializer, EmprestimoSerializer, CreditoSerializer, LoginSerializer
-from django.contrib.auth import authenticate
-from rest_framework.views import APIView
+from .models import Cadastro, Cliente, Transacao, Deposito, Saque, Emprestimo, Credito
+from .serializers import CadastroSerializer, ClienteSerializer, TransacaoSerializer, DepositoSerializer, SaqueSerializer, EmprestimoSerializer, CreditoSerializer
 from rest_framework.response import Response
-from rest_framework import status
-from rest_framework.permissions import IsAuthenticated
-from django.contrib.auth import authenticate
-from rest_framework.authtoken.models import Token
 from decimal import Decimal
-from rest_framework.decorators import action
 
+from rest_framework.views import APIView
+from rest_framework.permissions import IsAuthenticated
+# User = get_user_model()
+
+
+# terminar:
+#  https://medium.com/@ronakchitlangya1997/jwt-authentication-with-react-js-and-django-c034aae1e60d
+
+class HomeView(APIView):
+      permission_classes = (IsAuthenticated, )
+      
+      def get(self, request):
+            content = {'message': 'Welcome to the JWT Authentication page using React Js and Django!'}
+            
+            return Response(content)
+      
 
 class CadastroViewSet(viewsets.ModelViewSet):
     queryset = Cadastro.objects.all()
     serializer_class = CadastroSerializer
     
+
+# class LoginViewSet(viewsets.ModelViewSet):
+#     serializer_class = LoginSerializer
+#     queryset = User.objects.all()
+
+#     @action(detail=False, methods=['post'])
+#     def authenticate_user(self, request):
+#         email = request.data.get('email')
+#         senha = request.data.get('senha')
+
+#         try:
+#             user = User.objects.get(email=email)
+#         except User.DoesNotExist:
+#             return Response({'detail': 'Usuário não cadastrado'}, status=status.HTTP_400_BAD_REQUEST)
+
+#         if user.check_password(senha):
+#             # Autenticação bem-sucedida
+#             return Response({'detail': 'Autenticação bem-sucedida'})
+#         else:
+#             # Senha incorreta
+#             return Response({'detail': 'Credenciais inválidas'}, status=status.HTTP_400_BAD_REQUEST)
+      
+   
+   
+# @csrf_exempt
+# @require_POST
+# def api_login(request):
+#     data = json.loads(request.body)
+#     username = data.get('username')
+#     password = data.get('password')
+
+#     user = authenticate(request, username=username, password=password)
+
+#     if user is not None:
+#         login(request, user)
+#         return JsonResponse({'message': 'Login successful'})
+#     else:
+#         return JsonResponse({'message': 'Invalid credentials'}, status=401)
     
-class LoginViewSet(viewsets.ModelViewSet):
+# class LoginViewSet(viewsets.ModelViewSet):
       
-      serializer_class = LoginSerializer
-      queryset = Login.objects.all()
+#       serializer_class = LoginSerializer
+#       queryset = Login.objects.all()
       
-      def create(self, request, *args, **kwargs):  
-            email = request.data.get('email')
-            senha = request.data.get('senha')
+#       def create(self, request, *args, **kwargs):  
+#             email = request.data.get('email')
+#             senha = request.data.get('senha')
 
-        # Autenticar o usuário
-            user = authenticate(email=email, senha=senha)
+#         # Autenticar o usuário
+#             user = authenticate(email=email, senha=senha)
 
-            if user:
-            # Criar ou obter token de autenticação
-                  token, created = Token.objects.get_or_create(user=user)
+#             if user:
+#             # Criar ou obter token de autenticação
+#                   token, created = Token.objects.get_or_create(user=user)
 
-            # Serializar os dados, incluindo detalhes do Cadastro
-                  login_serializer = LoginSerializer(user.login)
-                  response_data = {
-                  'token': token.key,
-                  'login_details': login_serializer.data
-                  }
+#             # Serializar os dados, incluindo detalhes do Cadastro
+#                   login_serializer = LoginSerializer(user.login)
+#                   response_data = {
+#                   'token': token.key,
+#                   'login_details': login_serializer.data
+#                   }
 
-                  return Response(response_data, status=status.HTTP_200_OK)
+#                   return Response(response_data, status=status.HTTP_200_OK)
       
-            else:
+#             else:
                   
-                  return Response({'error': 'Credenciais inválidas'}, status=status.HTTP_401_UNAUTHORIZED)
+#                   return Response({'error': 'Credenciais inválidas'}, status=status.HTTP_401_UNAUTHORIZED)
       
     
 class ClienteViewSet(viewsets.ModelViewSet):
