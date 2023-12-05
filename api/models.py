@@ -1,6 +1,7 @@
 from django.db import models
 from django.dispatch import receiver
 from django.db.models.signals import post_save
+from django.contrib.auth.hashers import make_password
 
 # Create your models here.
 
@@ -23,16 +24,20 @@ class Cadastro(models.Model):
     estado = models.CharField(max_length=50)
     cep = models.CharField(max_length=10)
     imagem = models.ImageField(upload_to=upload_imagem_cliente, blank=True, null=True)
+    tentativas = models.IntegerField(default=0)
+    
+    def save(self, *args, **kwargs):
+        if not self.senha.startswith('pbkdf2_sha256$') and not self.senha.startswith('bcrypt$'):
+            self.senha = make_password(self.senha)
+        super().save(*args, **kwargs)
     
     def __str__(self):
         return f'{self.nome} - {self.email}- {self.senha}'
     
  
 class Login(models.Model):
-    
     email = models.EmailField(unique=True)
     senha =  senha = models.CharField(max_length=50)
-    
     
 # modelo criado para o Cliente colocar informações adicionais de cadastro
 class Cliente(models.Model):

@@ -1,12 +1,12 @@
 from rest_framework import viewsets
-from .models import Cadastro, Cliente, Transacao, Deposito, Saque, Emprestimo, Credito
-from .serializers import CadastroSerializer, ClienteSerializer, TransacaoSerializer, DepositoSerializer, SaqueSerializer, EmprestimoSerializer, CreditoSerializer
+from .models import Cadastro, Cliente, Transacao, Deposito, Saque, Emprestimo, Credito, Login
+from .serializers import CadastroSerializer, ClienteSerializer, TransacaoSerializer, DepositoSerializer, SaqueSerializer, EmprestimoSerializer, CreditoSerializer, LoginSerializer
 from rest_framework.response import Response
 from decimal import Decimal
-
+from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated
-# User = get_user_model()
+from django.contrib.auth.hashers import check_password
 
 
 # terminar:
@@ -16,9 +16,17 @@ class HomeView(APIView):
       permission_classes = (IsAuthenticated, )
       
       def get(self, request):
-            content = {'message': 'Welcome to the JWT Authentication page using React Js and Django!'}
+            content = {'message': 'Token gerado com sucesso!'}
             
             return Response(content)
+      
+      
+# class LogoutView(APIView):
+#       permission_classes = (IsAuthenticated, )
+#       def post(self, request):
+#             try:
+#                   refresh_token = request.data["refresh_token"]
+#                   token = RefreshToken(refresh_token)
       
 
 class CadastroViewSet(viewsets.ModelViewSet):
@@ -26,72 +34,36 @@ class CadastroViewSet(viewsets.ModelViewSet):
     serializer_class = CadastroSerializer
     
 
-# class LoginViewSet(viewsets.ModelViewSet):
-#     serializer_class = LoginSerializer
-#     queryset = User.objects.all()
-
-#     @action(detail=False, methods=['post'])
-#     def authenticate_user(self, request):
-#         email = request.data.get('email')
-#         senha = request.data.get('senha')
-
-#         try:
-#             user = User.objects.get(email=email)
-#         except User.DoesNotExist:
-#             return Response({'detail': 'Usuário não cadastrado'}, status=status.HTTP_400_BAD_REQUEST)
-
-#         if user.check_password(senha):
-#             # Autenticação bem-sucedida
-#             return Response({'detail': 'Autenticação bem-sucedida'})
-#         else:
-#             # Senha incorreta
-#             return Response({'detail': 'Credenciais inválidas'}, status=status.HTTP_400_BAD_REQUEST)
-      
-   
-   
-# @csrf_exempt
-# @require_POST
-# def api_login(request):
-#     data = json.loads(request.body)
-#     username = data.get('username')
-#     password = data.get('password')
-
-#     user = authenticate(request, username=username, password=password)
-
-#     if user is not None:
-#         login(request, user)
-#         return JsonResponse({'message': 'Login successful'})
-#     else:
-#         return JsonResponse({'message': 'Invalid credentials'}, status=401)
     
-# class LoginViewSet(viewsets.ModelViewSet):
+class LoginViewSet(viewsets.ModelViewSet):
       
-#       serializer_class = LoginSerializer
-#       queryset = Login.objects.all()
+      serializer_class = LoginSerializer
+      queryset = Login.objects.all()
       
-#       def create(self, request, *args, **kwargs):  
-#             email = request.data.get('email')
-#             senha = request.data.get('senha')
-
-#         # Autenticar o usuário
-#             user = authenticate(email=email, senha=senha)
-
-#             if user:
-#             # Criar ou obter token de autenticação
-#                   token, created = Token.objects.get_or_create(user=user)
-
-#             # Serializar os dados, incluindo detalhes do Cadastro
-#                   login_serializer = LoginSerializer(user.login)
-#                   response_data = {
-#                   'token': token.key,
-#                   'login_details': login_serializer.data
-#                   }
-
-#                   return Response(response_data, status=status.HTTP_200_OK)
-      
-#             else:
+      def create(self, request, *args, **kwargs):  
+            email_cliente = request.data.get('email')
+            senha_cliente = request.data.get('senha')
+            
+            dados_cliente = Cadastro.objects.filter(email=email_cliente).first()
+            
+            if dados_cliente:
                   
-#                   return Response({'error': 'Credenciais inválidas'}, status=status.HTTP_401_UNAUTHORIZED)
+                  senha_correta = check_password(password=senha_cliente, encoded=dados_cliente.senha)
+                  if email_cliente == dados_cliente.email and senha_cliente == dados_cliente.senha and dados_cliente.tentativas < 3:
+                        dados_cliente.tentativas = 0
+                        return Response(data={"id": dados_cliente.id, "nome": dados_cliente.nome}, status=200)
+                  elif dados_cliente.tentativas > 3 :
+                        dados_cliente.tentativas = 0
+                        return Response(data={"Bloqueado...": "Tentativas ultrapassadas."}, status=403)
+                  
+                  else:
+                        dados_cliente.tentativas = dados_cliente.tentativas + 1
+                        return Response({"Erro": "Dados inválidos"}, status=401)
+            else:
+                  return Response({"Erro!"}, status=400)
+                        
+
+   
       
     
 class ClienteViewSet(viewsets.ModelViewSet):
