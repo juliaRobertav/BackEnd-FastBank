@@ -11,10 +11,12 @@ https://julinha.gitbook.io/django/
 
 # Aprovar cartao e emprestimo
 
-# Histórico
+# Histórico/ Transferência
 
-# Login - autenticação e tela(conectar) - bloquear após 3 tentativas:
+# Login - bloquear 
 
+
+#  https://medium.com/@ronakchitlangya1997/jwt-authentication-with-react-js-and-django-c034aae1e60d
 
 # https://medium.com/@hudsonbrendon/autentica%C3%A7%C3%A3o-com-jwt-no-django-rest-framework-45626936c276
 
@@ -23,3 +25,6 @@ https://julinha.gitbook.io/django/
 # https://youtu.be/G7DiacAJisY?si=TWckKLgw9N5dhVzp
 
 https://medium.com/@ronakchitlangya1997/jwt-authentication-with-react-js-and-django-c034aae1e60d
+
+#Validações de entrada nos campos podem ser consultadas em Validators
+# https://django-rest-framework.org/api-guide/validators/

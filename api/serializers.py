@@ -41,12 +41,6 @@ class TransacaoSerializer(serializers.ModelSerializer):
         transacao_instance = Transacao.objects.create(**validated_data, conta_cliente=cliente_instance)
         return transacao_instance
 
-
-#Validações de entrada nos campos podem ser consultadas em Validators
-# https://django-rest-framework.org/api-guide/validators/
-
-
-    
         
         
 class DepositoSerializer(serializers.ModelSerializer):

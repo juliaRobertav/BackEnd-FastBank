@@ -18,7 +18,7 @@ from django.contrib import admin
 from django.urls import path, include
 from rest_framework_simplejwt import views as jwt_views
 
-from api.views import CadastroViewSet, ClienteViewSet, TransacaoViewSet, DepositoViewSet, SaqueViewSet, EmprestimoViewSet, CreditoViewSet, HomeView, LoginViewSet
+from api.views import CadastroViewSet, ClienteViewSet, TransacaoViewSet, DepositoViewSet, SaqueViewSet, EmprestimoViewSet, CreditoViewSet, HomeView, LoginViewSet, LogoutView
 
 from rest_framework import routers
 from django.conf.urls.static import static
@@ -43,6 +43,7 @@ urlpatterns = [
     path('token/', jwt_views.TokenObtainPairView.as_view(), name ='token_obtain_pair'),
     path('token/refresh/', jwt_views.TokenRefreshView.as_view(), name ='token_refresh'), 
     
-    path('home/', HomeView.as_view(), name='home')
+    path('home/', HomeView.as_view(), name='home'),
+    path('logout/', LogoutView.as_view(), name ='logout')
     
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

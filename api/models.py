@@ -50,6 +50,7 @@ class Cliente(models.Model):
     renda = models.FloatField()
     agencia = models.CharField(max_length=10)
     saldo = models.DecimalField(decimal_places=2, max_digits=30, default=0.00)
+    cartao_credito = models.BooleanField(default=False)
 
     def __str__(self):
         return self.conta
@@ -102,8 +103,10 @@ def update_saldo(sender, instance, **kwargs):
  # faltar aprovar       
 class Emprestimo(models.Model):
     cliente = models.ForeignKey('Cadastro', on_delete=models.CASCADE)
-    conta = models.OneToOneField('Cliente', on_delete=models.CASCADE, default='')
+    # conta = models.OneToOneField('Cliente', on_delete=models.CASCADE, default='')
     valor = models.FloatField()
+    parcelas = models.IntegerField(null=False, default=0)
+    valor_parcela = models.DecimalField(max_digits=10, decimal_places=2, default=0)
     data_solicitacao = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
@@ -112,7 +115,10 @@ class Emprestimo(models.Model):
   # falta aprovar 
 class Credito(models.Model):
     cliente = models.ForeignKey(Cadastro, null=True, verbose_name='nome_cliente', on_delete=models.PROTECT)
-    renda = models.OneToOneField(Cliente,  null=True, verbose_name='renda_cliente', related_name='credito',on_delete=models.PROTECT)
+    # renda = models.OneToOneField(Cliente,  null=True, verbose_name='renda_cliente', related_name='credito',on_delete=models.PROTECT)
+    # validade = models.DateField(null=False, default='') ta dando erro
+    cvv = models.SmallIntegerField(null=False, default=000) 
+    limite = models.DecimalField(max_digits=10, decimal_places=2, null=False, default=0)
     
     def __str__(self):
         return self.cliente

@@ -7,10 +7,9 @@ from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated
 from django.contrib.auth.hashers import check_password
+from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework import filters
 
-
-# terminar:
-#  https://medium.com/@ronakchitlangya1997/jwt-authentication-with-react-js-and-django-c034aae1e60d
 
 class HomeView(APIView):
       permission_classes = (IsAuthenticated, )
@@ -21,12 +20,16 @@ class HomeView(APIView):
             return Response(content)
       
       
-# class LogoutView(APIView):
-#       permission_classes = (IsAuthenticated, )
-#       def post(self, request):
-#             try:
-#                   refresh_token = request.data["refresh_token"]
-#                   token = RefreshToken(refresh_token)
+class LogoutView(APIView):
+      permission_classes = (IsAuthenticated, )
+      def post(self, request):
+            try:
+                  refresh_token = request.data["refresh_token"]
+                  token = RefreshToken(refresh_token)
+                  token.blacklist()
+                  return Response(status=status.HTTP_205_RESET_CONTENT)
+            except Exception as e:
+                  return Response(status=status.HTTP_400_BAD_REQUEST)
       
 
 class CadastroViewSet(viewsets.ModelViewSet):
@@ -49,11 +52,12 @@ class LoginViewSet(viewsets.ModelViewSet):
             if dados_cliente:
                   
                   senha_correta = check_password(password=senha_cliente, encoded=dados_cliente.senha)
-                  if email_cliente == dados_cliente.email and senha_cliente == dados_cliente.senha and dados_cliente.tentativas < 3:
+                  
+                  if email_cliente == dados_cliente.email and senha_correta and dados_cliente.tentativas < 3:
                         dados_cliente.tentativas = 0
                         return Response(data={"id": dados_cliente.id, "nome": dados_cliente.nome}, status=200)
                   elif dados_cliente.tentativas > 3 :
-                        dados_cliente.tentativas = 0
+                        # dados_cliente.tentativas = 0
                         return Response(data={"Bloqueado...": "Tentativas ultrapassadas."}, status=403)
                   
                   else:
@@ -67,6 +71,7 @@ class LoginViewSet(viewsets.ModelViewSet):
       
     
 class ClienteViewSet(viewsets.ModelViewSet):
+      # permission_classes = (IsAuthenticated, )
       serializer_class = ClienteSerializer
       queryset = Cliente.objects.all()
 
@@ -84,6 +89,7 @@ class ClienteViewSet(viewsets.ModelViewSet):
            
            
 class TransacaoViewSet(viewsets.ModelViewSet):
+      permission_classes = (IsAuthenticated, )
       serializer_class = TransacaoSerializer
       queryset = Transacao.objects.all()
     # permission_classes = (IsAuthenticated,)
@@ -93,19 +99,10 @@ class TransacaoViewSet(viewsets.ModelViewSet):
             valor_da_transacao = Decimal(dados_da_transacao['valor']) #buscando um dado especifico
             numero_da_conta = dados_da_transacao['conta_cliente']
             cliente_conta = Cliente.objects.filter(conta=numero_da_conta).values("saldo")
-            # O Resultado da consulta acima retorna um queryset assimm <QuerySet [{'saldo': 300}]>
-            # Para lermos no código aqui da função devemos fatiá-lo(slice)
-            # Primeiro acessamos o índice da lista passando [0]
-            # o resultado será {'saldo': 300}
-            # feito isso, faço a recuperação apenas do valor passando o campo que desejo o valor, no caso ['saldo']
             saldo = cliente_conta[0]
             saldo = saldo['saldo']
-            #verifica se é débito ou crédito pelo valor.
-            # se receber um valor positivo será um crédito na conta e não precisa fazer nada alem de creditar
-            # se receber valor negativo é para fazer um débito da conta e portanto deve verificar se tem saldo suficiente
-            # print("Valor da transação ", valor_da_transacao)
-            if  valor_da_transacao < 0 : # significa que será um débito da conta para pagamento de um boleto por exemplo
-            #     print("Valor da transação menor que Zero", valor_da_transacao)
+
+            if  valor_da_transacao < 0 : 
                   return Response(status=403, data='Valor da transação menor que zero')
 
                 #verifica se tem saldo para a transação
@@ -115,87 +112,102 @@ class TransacaoViewSet(viewsets.ModelViewSet):
 
             # atualiza saldo da conta e grava transacao na sequencia
             _serializer = self.serializer_class(data=request.data)
-            #print("serializer preenchido", _serializer)
             if _serializer.is_valid():
-               #print("serializer validado")
+
                # atualiza saldo da conta
                cliente_conta = Cliente.objects.get(conta=numero_da_conta)
-               cliente_conta.saldo = saldo + valor_da_transacao  # o 'valor' deve acompanhar o valor negativo de débito
+               cliente_conta.saldo = saldo + valor_da_transacao  
                cliente_conta.save()
-               # # registra a transação
+               # registra a transação
                _serializer.save()
                return Response(data=_serializer.data, status=201)
       
 
       
 class DepositoViewSet(viewsets.ModelViewSet):
+      permission_classes = (IsAuthenticated, )
       queryset = Deposito.objects.all()
       serializer_class = DepositoSerializer
       
       
 class SaqueViewSet(viewsets.ModelViewSet):
+      permission_classes = (IsAuthenticated, )
       queryset = Saque.objects.all()
       serializer_class = SaqueSerializer
       
 
 
-class EmprestimoViewSet(viewsets.ModelViewSet):
-    queryset = Emprestimo.objects.all()
-    serializer_class = EmprestimoSerializer
+class EmprestimoViewSet(viewsets.ModelViewSet): # ainda não ta funfando
+      # permission_classes = (IsAuthenticated, )
+      queryset = Emprestimo.objects.all()
+      serializer_class = EmprestimoSerializer
+    
+      filter_backends = [filters.SearchFilter]
+      search_fields = ['cliente', 'id', 'parcelas', 'valor_parcela']
 
-    def create(self, request, *args, **kwargs):
+      def create(self, request, *args, **kwargs):
             dados_do_emprestimo = request.data 
             valor_do_emprestimo = Decimal(dados_do_emprestimo['valor']) 
-            numero_da_conta = dados_do_emprestimo['conta']
-            cliente_conta = Cliente.objects.filter(conta=numero_da_conta).values("saldo")
+            parcelas_emprestimo = dados_do_emprestimo['parcelas']
             
-            saldo = cliente_conta[0]
-            saldo = saldo['saldo']
-   
-            if  valor_do_emprestimo < 0 : 
-                  return Response(status=403, data='Valor do empréstimo menor que zero')
-
-            if saldo < valor_do_emprestimo : 
-
-                  return Response(status=403, data='Não há saldo suficiente para realizar esta transação. ')
-
-    
-            _serializer = self.serializer_class(data=request.data)
- 
-            if _serializer.is_valid():
-
-               cliente_conta = Cliente.objects.get(conta=numero_da_conta)
-               cliente_conta.saldo = saldo + valor_do_emprestimo 
-               cliente_conta.save()
-
-               _serializer.save()
-               return Response(data=_serializer.data, status=201)
-
-    
+            try:
+                  cliente = Cliente.objects.get(id=cliente)
+                  
+                  if valor_do_emprestimo > 20000:
+                        return Response({"Negado": "Ultrapassou limite máximo de R$20.000,00"}, status=401)
+                  
+                  valor_parcela = valor_do_emprestimo / parcelas_emprestimo
+                  valor_parcela = f'{valor_parcela:,.2f}'
+                  request.data['valor_parcela'] = Decimal(valor_parcela)
+                  
+                  serializer = self.serializer_class(data=request.data)
+                  if serializer.is_valid():
+                        cliente.saldo = cliente.saldo + valor_do_emprestimo
+                        serializer.save()
+                        return Response({"Aprovado": f"O valor da sua parcela é {valor_parcela}"}, status=200)
+                  else:
+                        return Response(data=serializer.errors, status=400)
+                  
+            except Cliente.DoesNotExist:
+                  return Response({"Erro": "Cliente não cadastrado"}, status=404)
+            except Exception as e:
+                  return Response({"Erro": str(e)}, status=500)
+           
 
 
 class CreditoViewSet(viewsets.ModelViewSet):
+      # permission_classes = (IsAuthenticated, )
       queryset = Credito.objects.all()
       serializer_class = CreditoSerializer
+      
+      filter_backends = [filters.SearchFilter]
+      search_fields = ['cliente', 'limite', 'cvv']
     
       def create(self, request, *args, **kwargs):
-        dados_do_credito = request.data
+        
+            limite_cliente = Decimal(request.data['limite'])
+            dados_do_cliente = request.data['cliente']
+        
+            try:
+              cliente = Cliente.objects.get(id=dados_do_cliente)
+              
+              if limite_cliente > 1000:
+                  return Response({"Recusado": "O limite ultrapassou R$1.000,00"}, status=400)
+              
+              serializer = self.serializer_class(data=request.data)
+              if serializer.is_valid():
+                  cliente.cartao_credito = True
+                  serializer.save()
+                    
+                  return Response({"Sucesso": "Cartão Aprovado"}, status=200)
+              else:
+                  return Response(data=serializer.errors, status=400)
+            
+            except Cliente.DoesNotExist:
+                  return Response({"Erro": "Cliente não cadastrado"}, status=404)
+            except Exception as e:
+                  return Response({"Erro": str(e)}, status=500)
 
-        numero_da_conta = dados_do_credito['cliente']
 
-        try:
-            conta = Cliente.objects.get(conta=numero_da_conta)
-        except Cliente.DoesNotExist:
-            return Response(status=404, data='Cliente não encontrado')
-
-        renda = conta.renda
-  
-        if renda >= 1000:
-            return Response(status=201, data='Cartão Aprovado!')
-        elif renda < 1000:
-              return Response(status=403, data='Cartão de crédito não aprovado...')
-        else:
-            return Response(status=403, data='Algo deu errado...')
-    
 
 
