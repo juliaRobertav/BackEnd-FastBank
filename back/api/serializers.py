@@ -29,17 +29,10 @@ class ClienteSerializer(serializers.ModelSerializer):
             
 class TransacaoSerializer(serializers.ModelSerializer):
 
-    conta_cliente = serializers.CharField()
-
     class Meta:  # Classe interna
         model = Transacao
         fields = '__all__'
 
-    def create(self, validated_data):
-        conta_cli = validated_data.pop('conta_cliente')
-        cliente_instance, created = Cliente.objects.get_or_create(conta=conta_cli)
-        transacao_instance = Transacao.objects.create(**validated_data, conta_cliente=cliente_instance)
-        return transacao_instance
 
         
         

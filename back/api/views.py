@@ -104,38 +104,61 @@ class ClienteViewSet(viewsets.ModelViewSet):
            
            
 class TransacaoViewSet(viewsets.ModelViewSet):
-      permission_classes = (IsAuthenticated, )
       serializer_class = TransacaoSerializer
       queryset = Transacao.objects.all()
     # permission_classes = (IsAuthenticated,)
 
       def create(self, request, *args, **kwargs):
-            dados_da_transacao = request.data #pega todos os dados informados na API e armazena em dados _da_transacao
-            valor_da_transacao = Decimal(dados_da_transacao['valor']) #buscando um dado especifico
-            numero_da_conta = dados_da_transacao['conta_cliente']
-            cliente_conta = Cliente.objects.filter(conta=numero_da_conta).values("saldo")
-            saldo = cliente_conta[0]
-            saldo = saldo['saldo']
+            dados_recebidos = request.data # recebendo os dados para fazer a transferencia
+            valor_enviado = Decimal(dados_recebidos['valor'])
+            cliente_enviando = dados_recebidos['conta_enviando'] 
+            cliente_recebendo = dados_recebidos['conta_recebendo']
 
-            if  valor_da_transacao < 0 : 
-                  return Response(status=403, data='Valor da transação menor que zero')
+            try:
+                  dados_cliente_env = Cliente.objects.get(cliente=cliente_enviando) # consultando no banco se o cliente que esta enviando, existe
+                  dados_cliente_rec = Cliente.objects.get(conta=cliente_recebendo) # consultando no banco se o cliente que esta recebendo, existe
 
-                #verifica se tem saldo para a transação
-            if saldo < (valor_da_transacao * -1): # Multiplicado por -1 para inverter o valor informado e comparar com o saldo disponivel do cliente
+                  if valor_enviado > dados_cliente_env.saldo: #verificando se existe saldo suficiente
+                       return Response({"Mensage": "Transação negada por falta de saldo."}, status=400)
+                  
+                  _serializer_env = self.serializer_class(data=request.data) #serializando
 
-                  return Response(status=403, data='Não há saldo suficiente para realizar esta transação. ')
+                  if _serializer_env.is_valid():
+                       dados_cliente_env.saldo -= valor_enviado #alterando o valor do saldo
+                       dados_cliente_env.save() #salvando a alteracao do saldo
 
-            # atualiza saldo da conta e grava transacao na sequencia
-            _serializer = self.serializer_class(data=request.data)
-            if _serializer.is_valid():
+                       dados_cliente_rec.saldo += valor_enviado #alterando o valor do saldo
+                       dados_cliente_rec.save() #salvando a alteracao do saldo
 
-               # atualiza saldo da conta
-               cliente_conta = Cliente.objects.get(conta=numero_da_conta)
-               cliente_conta.saldo = saldo + valor_da_transacao  
-               cliente_conta.save()
-               # registra a transação
-               _serializer.save()
-               return Response(data=_serializer.data, status=201)
+                       _serializer_env.save() # SALVANDO A TRANSAÇÃO
+                       return Response({"Mensage":"Transação realizada com sucesso!"}, status=200)
+                  else:
+                       return Response(data=_serializer_env.errors, status=405) # retorna erro de validação
+            except Cliente.DoesNotExist:
+                  return Response({"Mensagem": "Clientes não encontrados"}, status=404)
+            except Exception as e:
+                  return Response({"Erro:": str(e)}, status=500)  
+            
+      def retrieve(self, request, pk=None):
+            try:
+                 info = Cliente.objects.get(cliente=pk) #puxando as informações do cliente
+
+                 transacoes = Transacao.objects.filter(conta_enviando=pk) #puxando os enviados
+                 transacoes2 = Transacao.objects.filter(conta_recebendo=info.conta) #puxando os recebidos
+
+            #      serializer = TransacaoSerializer(transacoes, many=True)
+            #      serializer2 = TransacaoSerializer(transacoes2, many=True)
+                 
+                 todas_transacoes = list(transacoes) + list(transacoes2)
+                 serializer = TransacaoSerializer(todas_transacoes, many=True)
+                 return Response(serializer.data, status=200)
+            except Transacao.DoesNotExist:
+                 return Response({"Mensagem": "Transações não encontradas"}, status=404)
+            
+            except Exception as e: #caso haja outro erro
+                  return Response({"Erro:": str(e)}, status=500) #retorna o erro encontrado
+
+transacaoId = TransacaoViewSet.as_view({'get': 'transacaoId'}, lookup_url_kwarg='pk')
       
 
       

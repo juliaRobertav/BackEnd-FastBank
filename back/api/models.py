@@ -51,22 +51,22 @@ class Cliente(models.Model):
     renda = models.FloatField()
     agencia = models.CharField(max_length=10)
     saldo = models.DecimalField(decimal_places=2, max_digits=30, default=0.00)
-    cartao_credito = models.BooleanField(default=False)
 
     def __str__(self):
-        return self.conta
+        return str(self.cliente)
     
     
     
 class Transacao(models.Model):
 
-    conta_cliente = models.ForeignKey(Cliente, null=True, verbose_name='Cliente', related_name='transacoes',on_delete=models.PROTECT)
-    descricao = models.CharField(max_length=120, null=False)
-    valor = models.IntegerField(null=False)
+    conta_enviando = models.ForeignKey(Cliente, null=True, verbose_name='Cliente', related_name='transacoes',on_delete=models.PROTECT)
+    descricao = models.TextField(null=False)
+    valor = models.DecimalField(max_digits=10, decimal_places=2, null=False)
     data_hora = models.DateTimeField(auto_now_add=True)
+    conta_recebendo = models.CharField(max_length=10, default='')
 
     def __str__(self):
-        return self.conta_cliente
+        return str(self.id)
 
 
 
