@@ -2,7 +2,7 @@ from django.db import models
 from django.dispatch import receiver
 from django.db.models.signals import post_save
 from django.contrib.auth.hashers import make_password
-
+from django.utils import timezone
 # Create your models here.
 
     
@@ -38,6 +38,7 @@ class Cadastro(models.Model):
 class Login(models.Model):
     email = models.EmailField(unique=True)
     senha =  senha = models.CharField(max_length=50)
+    logado = models.BooleanField(default=False)
     
 # modelo criado para o Cliente colocar informações adicionais de cadastro
 class Cliente(models.Model):
@@ -50,22 +51,22 @@ class Cliente(models.Model):
     renda = models.FloatField()
     agencia = models.CharField(max_length=10)
     saldo = models.DecimalField(decimal_places=2, max_digits=30, default=0.00)
-    cartao_credito = models.BooleanField(default=False)
 
     def __str__(self):
-        return self.conta
+        return str(self.cliente)
     
     
     
 class Transacao(models.Model):
 
-    conta_cliente = models.ForeignKey(Cliente, null=True, verbose_name='Cliente', related_name='transacoes',on_delete=models.PROTECT)
-    descricao = models.CharField(max_length=120, null=False)
-    valor = models.IntegerField(null=False)
+    conta_enviando = models.ForeignKey(Cliente, null=True, verbose_name='Cliente', related_name='transacoes',on_delete=models.PROTECT)
+    descricao = models.TextField(null=False)
+    valor = models.DecimalField(max_digits=10, decimal_places=2, null=False)
     data_hora = models.DateTimeField(auto_now_add=True)
+    conta_recebendo = models.CharField(max_length=10, default='')
 
     def __str__(self):
-        return self.conta_cliente
+        return str(self.id)
 
 
 
@@ -99,10 +100,9 @@ def update_saldo(sender, instance, **kwargs):
     instance.conta.saldo -= instance.valor
     instance.conta.save()
         
-        
- # faltar aprovar       
+         
 class Emprestimo(models.Model):
-    cliente = models.ForeignKey('Cadastro', on_delete=models.CASCADE)
+    cliente = models.ForeignKey(Cadastro, null=True, verbose_name='nome_cliente', on_delete=models.PROTECT)
     # conta = models.OneToOneField('Cliente', on_delete=models.CASCADE, default='')
     valor = models.FloatField()
     parcelas = models.IntegerField(null=False, default=0)
@@ -112,11 +112,10 @@ class Emprestimo(models.Model):
     def __str__(self):
         return f'Empréstimo de {self.valor} para {self.cliente}'
     
-  # falta aprovar 
 class Credito(models.Model):
     cliente = models.ForeignKey(Cadastro, null=True, verbose_name='nome_cliente', on_delete=models.PROTECT)
     # renda = models.OneToOneField(Cliente,  null=True, verbose_name='renda_cliente', related_name='credito',on_delete=models.PROTECT)
-    # validade = models.DateField(null=False, default='') ta dando erro
+    # validade = models.DateField(null=False, default=timezone.now) ta dando erro
     cvv = models.SmallIntegerField(null=False, default=000) 
     limite = models.DecimalField(max_digits=10, decimal_places=2, null=False, default=0)
     
