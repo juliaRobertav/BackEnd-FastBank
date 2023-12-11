@@ -1,0 +1,28 @@
+Em caso de dúvidas acessar minha mini documentação:
+(ainda não está 100% organizada e feita)
+
+https://julinha.gitbook.io/django/
+
+
+
+
+# FALTA:
+
+
+
+# Histórico/ Transferência
+
+
+
+#  https://medium.com/@ronakchitlangya1997/jwt-authentication-with-react-js-and-django-c034aae1e60d
+
+# https://medium.com/@hudsonbrendon/autentica%C3%A7%C3%A3o-com-jwt-no-django-rest-framework-45626936c276
+
+# https://youtu.be/nLQoAlxABX4?si=ypYjIYVDpY7Nvmwj
+
+# https://youtu.be/G7DiacAJisY?si=TWckKLgw9N5dhVzp
+
+https://medium.com/@ronakchitlangya1997/jwt-authentication-with-react-js-and-django-c034aae1e60d
+
+#Validações de entrada nos campos podem ser consultadas em Validators
+# https://django-rest-framework.org/api-guide/validators/
