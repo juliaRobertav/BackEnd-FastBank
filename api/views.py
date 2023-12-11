@@ -33,14 +33,14 @@ class LogoutView(APIView):
       
 
 class CadastroViewSet(viewsets.ModelViewSet):
-      permission_classes = (IsAuthenticated, )
+      # permission_classes = (IsAuthenticated, )
       queryset = Cadastro.objects.all()
       serializer_class = CadastroSerializer
     
 
     
 class LoginViewSet(viewsets.ModelViewSet):
-      permission_classes = (IsAuthenticated, )
+      # permission_classes = (IsAuthenticated, )
       serializer_class = LoginSerializer
       queryset = Login.objects.all()
       
@@ -87,7 +87,7 @@ class LoginViewSet(viewsets.ModelViewSet):
       
     
 class ClienteViewSet(viewsets.ModelViewSet):
-      permission_classes = (IsAuthenticated, )
+      # permission_classes = (IsAuthenticated, )
       serializer_class = ClienteSerializer
       queryset = Cliente.objects.all()
 
