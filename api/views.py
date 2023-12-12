@@ -33,14 +33,14 @@ class LogoutView(APIView):
       
 
 class CadastroViewSet(viewsets.ModelViewSet):
-      # permission_classes = (IsAuthenticated, )
+      permission_classes = (IsAuthenticated, )
       queryset = Cadastro.objects.all()
       serializer_class = CadastroSerializer
     
 
     
 class LoginViewSet(viewsets.ModelViewSet):
-      # permission_classes = (IsAuthenticated, )
+      permission_classes = (IsAuthenticated, )
       serializer_class = LoginSerializer
       queryset = Login.objects.all()
       
@@ -86,7 +86,7 @@ class LoginViewSet(viewsets.ModelViewSet):
       
     
 class ClienteViewSet(viewsets.ModelViewSet):
-      # permission_classes = (IsAuthenticated, )
+      permission_classes = (IsAuthenticated, )
       serializer_class = ClienteSerializer
       queryset = Cliente.objects.all()
 
@@ -105,7 +105,7 @@ class ClienteViewSet(viewsets.ModelViewSet):
 
       
 class TransacaoViewSet(viewsets.ModelViewSet):
-      # permission_classes = (IsAuthenticated,)
+      permission_classes = (IsAuthenticated,)
       serializer_class = TransacaoSerializer
       queryset = Transacao.objects.all()
 
@@ -176,8 +176,8 @@ class SaqueViewSet(viewsets.ModelViewSet):
       
 
 
-class EmprestimoViewSet(viewsets.ModelViewSet): # ainda não ta funfando
-      # permission_classes = (IsAuthenticated, )
+class EmprestimoViewSet(viewsets.ModelViewSet):
+      permission_classes = (IsAuthenticated, )
       queryset = Emprestimo.objects.all()
       serializer_class = EmprestimoSerializer
     
@@ -222,7 +222,7 @@ class EmprestimoViewSet(viewsets.ModelViewSet): # ainda não ta funfando
 
 
 class CreditoViewSet(viewsets.ModelViewSet):
-      # permission_classes = (IsAuthenticated, )
+      permission_classes = (IsAuthenticated, )
       queryset = Credito.objects.all()
       serializer_class = CreditoSerializer
       
