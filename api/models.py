@@ -32,7 +32,7 @@ class Cadastro(models.Model):
         super().save(*args, **kwargs)
     
     def __str__(self):
-        return f'{self.nome} - {self.email}- {self.senha}'
+        return self.nome
     
  
 class Login(models.Model):
@@ -55,6 +55,9 @@ class Cliente(models.Model):
     def __str__(self):
         return str(self.cliente)
     
+class Saldo(models.Model):
+    saldo = models.OneToOneField(Cliente, on_delete=models.CASCADE, related_name='saldo_cliente')
+
     
     
 class Transacao(models.Model):
