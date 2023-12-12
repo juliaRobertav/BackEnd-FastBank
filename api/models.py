@@ -32,7 +32,7 @@ class Cadastro(models.Model):
         super().save(*args, **kwargs)
     
     def __str__(self):
-        return f'{self.nome} - {self.email}- {self.senha}'
+        return self.nome
     
  
 class Login(models.Model):
@@ -55,8 +55,8 @@ class Cliente(models.Model):
     def __str__(self):
         return str(self.cliente)
     
-class Saldo(models.Model):
-    saldo = models.ForeignKey(Cliente, null=True, verbose_name='saldo_cliente', on_delete=models.PROTECT)
+# class Saldo(models.Model):
+#     saldo = models.ForeignKey(Cliente, null=True, verbose_name='saldo_cliente', on_delete=models.PROTECT)
     
     
 class Transacao(models.Model):

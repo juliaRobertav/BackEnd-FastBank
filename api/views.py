@@ -1,6 +1,6 @@
 from rest_framework import viewsets
-from .models import Cadastro, Cliente, Transacao, Deposito, Saque, Emprestimo, Credito, Login, Saldo
-from .serializers import CadastroSerializer, ClienteSerializer, TransacaoSerializer, DepositoSerializer, SaqueSerializer, EmprestimoSerializer, CreditoSerializer, LoginSerializer, SaldoSerializer
+from .models import Cadastro, Cliente, Transacao, Deposito, Saque, Emprestimo, Credito, Login
+from .serializers import CadastroSerializer, ClienteSerializer, TransacaoSerializer, DepositoSerializer, SaqueSerializer, EmprestimoSerializer, CreditoSerializer, LoginSerializer
 from rest_framework.response import Response
 from decimal import Decimal
 from rest_framework import status
@@ -103,13 +103,13 @@ class ClienteViewSet(viewsets.ModelViewSet):
                _serializer.save()
                return Response(data=_serializer.data, status=201)
            
-class SaldoViewSet(viewsets.ModelViewSet):
-      serializer_class = SaldoSerializer
-      queryset = Saldo.objects.all()
+# class SaldoViewSet(viewsets.ModelViewSet):
+#       serializer_class = SaldoSerializer
+#       queryset = Saldo.objects.all()
 
       
 class TransacaoViewSet(viewsets.ModelViewSet):
-      permission_classes = (IsAuthenticated,)
+      # permission_classes = (IsAuthenticated,)
       serializer_class = TransacaoSerializer
       queryset = Transacao.objects.all()
 
@@ -181,7 +181,7 @@ class SaqueViewSet(viewsets.ModelViewSet):
 
 
 class EmprestimoViewSet(viewsets.ModelViewSet): # ainda não ta funfando
-      permission_classes = (IsAuthenticated, )
+      # permission_classes = (IsAuthenticated, )
       queryset = Emprestimo.objects.all()
       serializer_class = EmprestimoSerializer
     
@@ -189,7 +189,7 @@ class EmprestimoViewSet(viewsets.ModelViewSet): # ainda não ta funfando
       search_fields = ['cliente', 'id', 'parcelas', 'valor_parcela']
 
       def create(self, request, *args, **kwargs):
-            dados_do_emprestimo = request.data.dict()
+            dados_do_emprestimo = request.data
             cliente_emprestimo = dados_do_emprestimo['cliente']
             valor_do_emprestimo = Decimal(dados_do_emprestimo['valor']) 
             parcelas_emprestimo = int(dados_do_emprestimo['parcelas'])
@@ -226,7 +226,7 @@ class EmprestimoViewSet(viewsets.ModelViewSet): # ainda não ta funfando
 
 
 class CreditoViewSet(viewsets.ModelViewSet):
-      permission_classes = (IsAuthenticated, )
+      # permission_classes = (IsAuthenticated, )
       queryset = Credito.objects.all()
       serializer_class = CreditoSerializer
       
