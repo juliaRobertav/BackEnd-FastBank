@@ -2,7 +2,7 @@ from django.contrib import admin
 from django.urls import path, include
 from rest_framework_simplejwt import views as jwt_views
 
-from api.views import CadastroViewSet, ClienteViewSet, TransacaoViewSet, DepositoViewSet, SaqueViewSet, EmprestimoViewSet, CreditoViewSet, HomeView, LoginViewSet, SaldoViewSet
+from api.views import CadastroViewSet, ClienteViewSet, TransacaoViewSet, DepositoViewSet, SaqueViewSet, EmprestimoViewSet, CreditoViewSet, HomeView, LoginViewSet
 
 from rest_framework import routers
 from django.conf.urls.static import static

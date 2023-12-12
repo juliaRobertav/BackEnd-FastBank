@@ -1,6 +1,6 @@
 from rest_framework import viewsets
-from .models import Cadastro, Cliente, Transacao, Deposito, Saque, Emprestimo, Credito, Login, Saldo
-from .serializers import CadastroSerializer, ClienteSerializer, TransacaoSerializer, DepositoSerializer, SaqueSerializer, EmprestimoSerializer, CreditoSerializer, LoginSerializer, SaldoSerializer
+from .models import Cadastro, Cliente, Transacao, Deposito, Saque, Emprestimo, Credito, Login
+from .serializers import CadastroSerializer, ClienteSerializer, TransacaoSerializer, DepositoSerializer, SaqueSerializer, EmprestimoSerializer, CreditoSerializer, LoginSerializer
 from rest_framework.response import Response
 from decimal import Decimal
 from rest_framework import status
