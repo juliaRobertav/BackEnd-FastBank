@@ -102,9 +102,6 @@ class ClienteViewSet(viewsets.ModelViewSet):
                _serializer.save()
                return Response(data=_serializer.data, status=201)
            
-class SaldoViewSet(viewsets.ModelViewSet):
-      serializer_class = SaldoSerializer
-      queryset = Saldo.objects.all()
 
       
 class TransacaoViewSet(viewsets.ModelViewSet):

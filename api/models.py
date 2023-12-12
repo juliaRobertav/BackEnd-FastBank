@@ -55,10 +55,6 @@ class Cliente(models.Model):
     def __str__(self):
         return str(self.cliente)
     
-class Saldo(models.Model):
-    saldo = models.OneToOneField(Cliente, on_delete=models.CASCADE, related_name='saldo_cliente')
-
-    
     
 class Transacao(models.Model):
 

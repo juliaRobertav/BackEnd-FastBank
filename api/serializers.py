@@ -25,20 +25,12 @@ class ClienteSerializer(serializers.ModelSerializer):
             model = Cliente
             fields = '__all__'
             
-
-class SaldoSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Saldo
-        fields = '__all__'
-            
 class TransacaoSerializer(serializers.ModelSerializer):
 
     class Meta:  # Classe interna
         model = Transacao
         fields = '__all__'
 
-
-        
         
 class DepositoSerializer(serializers.ModelSerializer):
     class Meta:
