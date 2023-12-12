@@ -55,6 +55,8 @@ class Cliente(models.Model):
     def __str__(self):
         return str(self.cliente)
     
+class Saldo(models.Model):
+    saldo = models.ForeignKey(Cliente, null=True, verbose_name='saldo_cliente', on_delete=models.PROTECT)
     
     
 class Transacao(models.Model):

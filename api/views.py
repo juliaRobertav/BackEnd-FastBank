@@ -1,6 +1,6 @@
 from rest_framework import viewsets
-from .models import Cadastro, Cliente, Transacao, Deposito, Saque, Emprestimo, Credito, Login
-from .serializers import CadastroSerializer, ClienteSerializer, TransacaoSerializer, DepositoSerializer, SaqueSerializer, EmprestimoSerializer, CreditoSerializer, LoginSerializer
+from .models import Cadastro, Cliente, Transacao, Deposito, Saque, Emprestimo, Credito, Login, Saldo
+from .serializers import CadastroSerializer, ClienteSerializer, TransacaoSerializer, DepositoSerializer, SaqueSerializer, EmprestimoSerializer, CreditoSerializer, LoginSerializer, SaldoSerializer
 from rest_framework.response import Response
 from decimal import Decimal
 from rest_framework import status
@@ -103,7 +103,11 @@ class ClienteViewSet(viewsets.ModelViewSet):
                _serializer.save()
                return Response(data=_serializer.data, status=201)
            
-           
+class SaldoViewSet(viewsets.ModelViewSet):
+      serializer_class = SaldoSerializer
+      queryset = Saldo.objects.all()
+
+      
 class TransacaoViewSet(viewsets.ModelViewSet):
       permission_classes = (IsAuthenticated,)
       serializer_class = TransacaoSerializer
