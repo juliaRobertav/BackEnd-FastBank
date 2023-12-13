@@ -26,10 +26,10 @@ class Cadastro(models.Model):
     imagem = models.ImageField(upload_to=upload_imagem_cliente, blank=True, null=True)
     tentativas = models.IntegerField(default=0)
     
-    # def save(self, *args, **kwargs):
-    #     if not self.senha.startswith('pbkdf2_sha256$') and not self.senha.startswith('bcrypt$'):
-    #         self.senha = make_password(self.senha)
-    #     super().save(*args, **kwargs)
+    def save(self, *args, **kwargs):
+        if not self.senha.startswith('pbkdf2_sha256$') and not self.senha.startswith('bcrypt$'):
+            self.senha = make_password(self.senha)
+        super().save(*args, **kwargs)
     
     def __str__(self):
         return self.nome
